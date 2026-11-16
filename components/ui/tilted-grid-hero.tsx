@@ -271,8 +271,9 @@ export function TiltedGridHero({
                   key={k}
                   className={cn(
                     "absolute top-0 overflow-hidden bg-muted",
-                    k === 0 && "rounded-l-lg",
-                    k === SLICES - 1 && "rounded-r-lg",
+                    // 9M: with no gap the tiles join into one ribbon, so only spaced tiles get round corners
+                    k === 0 && gap > 0 && "rounded-l-lg",
+                    k === SLICES - 1 && gap > 0 && "rounded-r-lg",
                   )}
                   style={{
                     // Every strip starts at the tile's centre and is turned
@@ -281,8 +282,9 @@ export function TiltedGridHero({
                     // A pixel wider than its share, so neighbouring facets
                     // overlap and no hairline opens between them. The last
                     // has no neighbour to cover.
+                    // 9M: with no gap the last strip meets the next tile, so it overlaps by a pixel too
                     width:
-                      k === SLICES - 1 ? u(share) : `calc(${u(share)} + 1px)`,
+                      k === SLICES - 1 && gap > 0 ? u(share) : `calc(${u(share)} + 1px)`,
                     height: u(1),
                     transform: turn(
                       (aspectRatio / 2 - (k + 0.5) * share) * unit,

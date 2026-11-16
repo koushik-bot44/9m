@@ -1,14 +1,21 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion, useMotionValue, useMotionValueEvent, useScroll } from "framer-motion";
 import { Pause, Play } from "lucide-react";
 import { DEFAULT_REELS, SITE, type Reel } from "@/lib/site";
 import { Pill } from "./pill";
 
-/** Vertical reels in a swipeable row. Each plays, muted, once most of it is on screen.
+/** Vertical reels in a row. The page holds here and your scroll moves the row sideways, reel by reel;
+ *  once the last reel is in, the page carries on. Each reel plays, muted, while it is on screen.
  *  Reels uploaded in /admin come first. */
 export function Reels() {
   const [list, setList] = useState<Reel[]>(DEFAULT_REELS);
+  const wrap = useRef<HTMLElement>(null);
+  const track = useRef<HTMLDivElement>(null);
+  const travel = useRef(0); // how far the row has to move: its width less the screen's
+  const [hold, setHold] = useState(0);
+  const x = useMotionValue(0);
 
   useEffect(() => {
     let live = true;
@@ -23,25 +30,49 @@ export function Reels() {
     };
   }, []);
 
+  const { scrollYProgress } = useScroll({ target: wrap, offset: ["start start", "end end"] });
+  useMotionValueEvent(scrollYProgress, "change", (p) => x.set(-p * travel.current));
+
+  useEffect(() => {
+    const measure = () => {
+      const t = track.current;
+      if (!t) return;
+      travel.current = Math.max(0, t.scrollWidth - window.innerWidth);
+      setHold(travel.current);
+      x.set(-scrollYProgress.get() * travel.current);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (track.current) ro.observe(track.current);
+    window.addEventListener("resize", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [list.length, scrollYProgress, x]);
+
   return (
-    <section id="reels" className="py-[clamp(72px,10vw,150px)]">
-      <div className="gut flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <h2 className="display text-[clamp(2.4rem,6vw,5.8rem)]">
-            Reels from the <em>bay.</em>
-          </h2>
-          <p className="mt-4 max-w-xl text-[clamp(1.05rem,1.4vw,1.3rem)] leading-snug text-muted-foreground">
-            Short clips of the work, the way it goes up on Instagram. Swipe through; each one plays as it comes into view.
-          </p>
+    // one pixel of scroll moves the row one pixel, so the hold is exactly as long as the row needs
+    <section id="reels" ref={wrap} className="relative" style={{ height: `calc(100svh + ${hold}px)` }}>
+      <div className="sticky top-0 flex h-svh flex-col justify-center overflow-hidden pt-[clamp(44px,7svh,72px)] max-md:pb-[74px]">
+        <div className="gut flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="display text-[clamp(2.2rem,5vw,5rem)]">
+              Reels from the <em>bay.</em>
+            </h2>
+            <p className="mt-3 max-w-xl text-[clamp(1rem,1.3vw,1.2rem)] leading-snug text-muted-foreground">
+              Short clips of the work, the way it goes up on Instagram. Keep scrolling to move through them.
+            </p>
+          </div>
+          <Pill href={SITE.instagram} external tone="line" className="max-md:hidden">
+            Follow {SITE.instagramHandle}
+          </Pill>
         </div>
-        <Pill href={SITE.instagram} external tone="line">
-          Follow {SITE.instagramHandle}
-        </Pill>
-      </div>
-      <div className="mt-[clamp(28px,4vw,56px)] flex snap-x snap-mandatory scroll-px-[var(--gut)] gap-[clamp(10px,1.2vw,18px)] overflow-x-auto px-[var(--gut)] pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {list.map((r) => (
-          <ReelCard key={r.id} reel={r} />
-        ))}
+        <motion.div ref={track} style={{ x }} className="mt-[clamp(20px,3.4svh,44px)] flex w-max gap-[clamp(10px,1.2vw,18px)] px-[var(--gut)]">
+          {list.map((r) => (
+            <ReelCard key={r.id} reel={r} />
+          ))}
+        </motion.div>
       </div>
     </section>
   );
@@ -84,7 +115,7 @@ function ReelCard({ reel }: { reel: Reel }) {
   };
 
   return (
-    <figure className="group relative aspect-[9/16] w-[clamp(210px,19vw,290px)] shrink-0 snap-start overflow-hidden rounded-[14px] bg-[#111]">
+    <figure className="group relative aspect-[9/16] h-[min(58svh,520px)] shrink-0 overflow-hidden rounded-[14px] bg-[#111] max-md:h-[min(56svh,440px)]">
       <video
         ref={video}
         src={reel.src}
