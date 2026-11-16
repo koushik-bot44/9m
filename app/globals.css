@@ -1,0 +1,317 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-heading: var(--font-fraunces), Georgia, serif;
+  --font-hand: var(--font-sign), cursive;
+  --font-brand: var(--font-montserrat), ui-sans-serif, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-paper: var(--paper);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.15);
+  --animate-marquee: marquee var(--marquee-duration, 60s) linear infinite;
+}
+
+/* ---------- moods: day, pink dusk, night (switch in the top bar) ----------
+   Registered so a change of mood glides instead of snapping. Lettering stays black by day and at dusk. */
+@property --background { syntax: "<color>"; inherits: true; initial-value: #ebe6de; }
+@property --foreground { syntax: "<color>"; inherits: true; initial-value: #0e0e0f; }
+@property --paper { syntax: "<color>"; inherits: true; initial-value: #f7f3ec; }
+@property --secondary { syntax: "<color>"; inherits: true; initial-value: #dfd9ce; }
+@property --muted-foreground { syntax: "<color>"; inherits: true; initial-value: #4b4a48; }
+@property --border { syntax: "<color>"; inherits: true; initial-value: rgb(14 14 15 / 0.14); }
+@property --sky-1 { syntax: "<color>"; inherits: true; initial-value: #6fb1d6; }
+@property --sky-2 { syntax: "<color>"; inherits: true; initial-value: #a6d6e4; }
+@property --sky-3 { syntax: "<color>"; inherits: true; initial-value: #f0e9d6; }
+@property --sky-4 { syntax: "<color>"; inherits: true; initial-value: #f7d2ad; }
+@property --ground { syntax: "<color>"; inherits: true; initial-value: #f6e7d3; }
+@property --word { syntax: "<color>"; inherits: true; initial-value: rgb(255 255 255 / 0.92); }
+@property --emboss { syntax: "<color>"; inherits: true; initial-value: rgb(255 255 255 / 0.62); }
+@property --orb-color { syntax: "<color>"; inherits: true; initial-value: rgb(255 253 240 / 0.98); }
+@property --orb-glow { syntax: "<color>"; inherits: true; initial-value: rgb(255 246 214 / 0.5); }
+@property --orb-core { syntax: "<percentage>"; inherits: true; initial-value: 6%; }
+@property --orb-edge { syntax: "<percentage>"; inherits: true; initial-value: 15%; }
+
+:root {
+  --mood-t: 1.3s;
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --radius: 0.875rem;
+  --gut: clamp(18px, 4.2vw, 68px);
+
+  /* day */
+  --background: #ebe6de;
+  --foreground: #0e0e0f;
+  --paper: #f7f3ec;
+  --secondary: #dfd9ce;
+  --muted-foreground: #4b4a48;
+  --border: rgb(14 14 15 / 0.14);
+  --emboss: rgb(255 255 255 / 0.86);
+  --sky-1: #6fb1d6; --sky-2: #a6d6e4; --sky-3: #f0e9d6; --sky-4: #f7d2ad;
+  --ground: #f6e7d3; --word: rgb(255 255 255 / 0.92);
+  --orb-x: 77vw; --orb-y: 15svh; --orb-size: 600px; --orb-core: 6%; --orb-edge: 15%;
+  --orb-color: rgb(255 253 240 / 0.98); --orb-glow: rgb(255 246 214 / 0.5);
+  --cloud-filter: brightness(1.1); --cloud-opacity: 0.97; --stars: 0;
+  --car-filter: none; --lamp: 0; --shadow: 0.36;
+
+  /* shadcn roles follow the mood */
+  --card: var(--paper);
+  --card-foreground: var(--foreground);
+  --popover: var(--paper);
+  --popover-foreground: var(--foreground);
+  --primary: var(--foreground);
+  --primary-foreground: var(--paper);
+  --secondary-foreground: var(--foreground);
+  --muted: var(--secondary);
+  --accent: var(--secondary);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.577 0.245 27.325);
+  --input: color-mix(in oklab, var(--foreground) 20%, transparent);
+  --ring: var(--foreground);
+
+  transition:
+    --background var(--mood-t) var(--ease-io), --foreground var(--mood-t) var(--ease-io), --paper var(--mood-t) var(--ease-io),
+    --secondary var(--mood-t) var(--ease-io), --muted-foreground var(--mood-t) var(--ease-io), --border var(--mood-t) var(--ease-io),
+    --emboss var(--mood-t) var(--ease-io),
+    --sky-1 var(--mood-t) var(--ease-io), --sky-2 var(--mood-t) var(--ease-io), --sky-3 var(--mood-t) var(--ease-io), --sky-4 var(--mood-t) var(--ease-io),
+    --ground var(--mood-t) var(--ease-io), --word var(--mood-t) var(--ease-io), --orb-color var(--mood-t) var(--ease-io),
+    --orb-glow var(--mood-t) var(--ease-io), --orb-core var(--mood-t) var(--ease-io), --orb-edge var(--mood-t) var(--ease-io);
+}
+
+/* pink dusk */
+:root[data-mood="dusk"] {
+  --background: #f4e4e0;
+  --foreground: #1b1014;
+  --paper: #fcf3f0;
+  --secondary: #ecd4ce;
+  --muted-foreground: #5e4a50;
+  --border: rgb(27 16 20 / 0.14);
+  --emboss: rgb(255 250 248 / 0.88);
+  --sky-1: #978cd3; --sky-2: #e596bb; --sky-3: #fbc39e; --sky-4: #fbe1b0;
+  --ground: #fbd8c2; --word: rgb(255 246 240 / 0.9);
+  --orb-x: 70vw; --orb-y: 55svh; --orb-size: 760px; --orb-core: 8%; --orb-edge: 13%;
+  --orb-color: rgb(255 234 204 / 0.98); --orb-glow: rgb(255 158 128 / 0.48);
+  --cloud-filter: brightness(1.03) sepia(0.62) saturate(2.3) hue-rotate(-34deg); --cloud-opacity: 0.93;
+  --car-filter: sepia(0.14) saturate(0.94) brightness(0.97); --shadow: 0.4;
+}
+
+/* night */
+:root[data-mood="night"] {
+  color-scheme: dark;
+  --background: #0e0f12;
+  --foreground: #f1ede6;
+  --paper: #18191d;
+  --secondary: #25272c;
+  --muted-foreground: #a9a59e;
+  --border: rgb(241 237 230 / 0.14);
+  --emboss: rgb(255 255 255 / 0.1);
+  --sky-1: #070b1d; --sky-2: #10254a; --sky-3: #1c4a63; --sky-4: #2e7079;
+  --ground: #1b4856; --word: rgb(206 230 240 / 0.82);
+  --orb-x: 81vw; --orb-y: 15svh; --orb-size: 340px; --orb-core: 13%; --orb-edge: 1.2%;
+  --orb-color: #f3f6ff; --orb-glow: rgb(170 200 255 / 0.2);
+  --cloud-filter: brightness(0.36) sepia(1) saturate(1.5) hue-rotate(176deg); --cloud-opacity: 0.72; --stars: 1;
+  --car-filter: brightness(0.72) saturate(0.92) contrast(1.06); --lamp: 1; --shadow: 0.62;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    scroll-padding-top: 84px;
+    /* the scroll bar: thin, in the lettering colour, on the page colour */
+    scrollbar-width: thin;
+    scrollbar-color: var(--foreground) var(--background);
+  }
+  html::-webkit-scrollbar { width: 10px; }
+  html::-webkit-scrollbar-track { background: var(--background); }
+  html::-webkit-scrollbar-thumb { background: var(--foreground); border-radius: 999px; border: 2px solid var(--background); }
+  body {
+    @apply bg-background text-foreground antialiased;
+    overflow-x: clip;
+  }
+  ::selection { background: var(--foreground); color: var(--paper); }
+}
+
+/* lettering: Fraunces, soft and heavy, with an italic accent word */
+.display { font-family: var(--font-display); font-variation-settings: "SOFT" 80, "WONK" 1; font-weight: 900; letter-spacing: -0.03em; line-height: 0.9; text-wrap: balance; }
+.display em { font-style: italic; }
+.gut { padding-inline: var(--gut); }
+
+@keyframes marquee { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
+.marquee-track { display: flex; width: max-content; animation: marquee var(--marquee-duration, 60s) linear infinite; will-change: transform; }
+.marquee:hover .marquee-track, .marquee[data-paused="true"] .marquee-track { animation-play-state: paused; }
+
+/* the site's background photograph (toy cars): fixed behind everything, very light */
+.site-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; background-position: center; background-size: cover; background-repeat: no-repeat; opacity: 0.065; }
+:root[data-mood="dusk"] .site-bg { opacity: 0.06; }
+:root[data-mood="night"] .site-bg { opacity: 0.05; }
+
+/* film grain over the whole page, the way the photographs have it */
+.grain { position: fixed; inset: 0; z-index: 70; pointer-events: none; opacity: 0.05; background-size: 120px 120px; }
+
+/* ---------- intro: the 9M you fly through (Glyph Portal) ---------- */
+[data-9m-portal] { --gp-h: calc(var(--gp-word-bottom, 60svh) - var(--gp-word-top, 30svh)); }
+[data-9m-portal] [data-gp-caption] { inset: calc(var(--gp-word-bottom, 50%) + var(--gp-h) * 0.27 + 26px) 24px auto; justify-content: center; }
+/* "CAR CARE" under the giant 9M, in the same proportions as the Instagram logo */
+.pf__brand { position: absolute; inset: calc(var(--gp-word-bottom, 50%) + var(--gp-h) * 0.09) 24px auto; margin: 0; text-align: center; font-family: var(--font-brand); font-weight: 600; font-size: max(26px, calc(var(--gp-h) * 0.165)); line-height: 1; letter-spacing: 0.06em; }
+[data-9m-portal] [data-gp-hint] { display: none; }
+[data-9m-portal] [data-gp-touch-picker] { display: none; }
+[data-9m-portal] [data-gp-enter] {
+  min-height: 50px; padding: 0 6px 0 22px; gap: 14px; border-radius: 999px;
+  background: var(--foreground); color: var(--background); font: 600 15px/1 var(--font-instrument), sans-serif;
+}
+[data-9m-portal] [data-gp-enter] span { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: var(--background); color: var(--foreground); font-size: 15px; }
+[data-9m-portal] [data-gp-content] { padding: 0; display: block; }
+.pf__eyebrow { position: absolute; inset: auto 24px calc(100% - var(--gp-word-top, 35%) + 30px); margin: 0; text-align: center; font-size: 14px; font-weight: 500; color: var(--muted-foreground); }
+.pf__support { position: absolute; inset: calc(var(--gp-word-bottom, 50%) + 26px) 24px auto; margin: 0; text-align: center; font-family: var(--font-display); font-variation-settings: "SOFT" 80, "WONK" 1; font-style: italic; font-weight: 800; font-size: clamp(20px, 1.9vw, 28px); }
+.pf__scroll { position: absolute; inset: auto var(--gut) 4% auto; text-align: right; font-size: 12px; color: var(--muted-foreground); }
+@media (max-width: 899px) { .pf__scroll { inset: auto 24px 5%; text-align: center; } }
+
+/* the progress line on the service tabs */
+@keyframes tabfill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Inside the bay: the next film rises from the bottom edge over the last one and drifts up into place (Cosmos) */
+@keyframes bayIn { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes bayInMedia { from { transform: translateY(16%) scale(1.06); } to { transform: none; } }
+@keyframes bayFade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.bay-in { animation: bayIn 620ms cubic-bezier(0.65, 0, 0.35, 1) both; }
+.bay-in__media { animation: bayInMedia 900ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.bay-fade { animation: bayFade 500ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+@media (prefers-reduced-motion: reduce) { .bay-in, .bay-in__media, .bay-fade { animation: none; } }
+/* the map follows the night sky */
+:root[data-mood="night"] .map-night { filter: invert(0.9) hue-rotate(180deg) saturate(0.7); }
+
+/* ---------- hero, inside the letters: the Mustang's back with the 9M behind it ----------
+   --o: 1 while you are still flying in (car full width), 0 once settled.  --w: the 9M rising.  --z: push-in to the fuel cap. */
+[data-9m-portal] { --z: 0; }
+.hscene { position: absolute; inset: 0; overflow: hidden; background: transparent; transform: scale(calc(2.16 - var(--gp-field-scale, 1))); transform-origin: 50% 46%; --o: 1; }
+.hero__shot {
+  position: absolute; right: 0; top: 0; bottom: 0; width: calc(79vw + max(var(--o), var(--z)) * 21vw); overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 calc(22% - max(var(--o), var(--z)) * 22%));
+  mask-image: linear-gradient(90deg, transparent 0, #000 calc(22% - max(var(--o), var(--z)) * 22%));
+}
+.hero__frame { position: absolute; left: 64%; top: 50%; width: max(100%, 150svh); aspect-ratio: 3 / 2; translate: -64% -50%; transform-origin: 40% 72%; transform: scale(calc(1 + var(--z) * 1.15)); will-change: transform; }
+.hero__img { display: block; width: 100%; height: 100%; -webkit-mask-size: 100% 100%; mask-size: 100% 100%; filter: var(--car-filter); transition: filter var(--mood-t) var(--ease-io); }
+/* at night the tail lamps glow */
+.hero__tail {
+  position: absolute; left: 88%; top: 71%; width: 17%; aspect-ratio: 1; translate: -50% -50%; border-radius: 50%; opacity: var(--lamp); pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(closest-side, rgb(255 92 70 / 0.9), rgb(255 40 30 / 0.35) 45%, transparent); transition: opacity var(--mood-t) var(--ease-io);
+}
+
+/* the hero lettering that arrives once you are inside, then the close-up card */
+.hc__one, .hc__two { position: relative; height: var(--gp-height, 100svh); }
+.hc__one { opacity: calc(1 - var(--z) * 2.5); }
+.hc__copy { position: absolute; left: var(--gut); top: clamp(100px, 16svh, 158px); }
+.hc__title span { display: block; font-size: min(6.9vw, 11.8svh); line-height: 0.92; }
+.hc__title em { display: block; margin: -0.02em 0 0 -0.03em; font-size: min(11.5vw, 19.8svh); line-height: 0.86; letter-spacing: -0.035em; }
+.hc__meta { position: absolute; left: var(--gut); bottom: clamp(22px, 5svh, 52px); width: min(28.5rem, 35vw); }
+/* the signature: champagne gold, written in from left to right as the push-in reaches the fuel cap */
+.hc__sign {
+  --sig: clamp(0, calc((var(--z) - 0.45) * 2.4), 1);
+  position: absolute; right: calc(var(--gut) + 1vw); bottom: clamp(36px, 10svh, 110px); margin: 0;
+  font-family: var(--font-hand); font-size: clamp(4.4rem, 9.5vw, 9.6rem); line-height: 1.1; white-space: nowrap; color: #f1d08f;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 28px rgb(0 0 0 / 0.45);
+  rotate: -6deg; padding: 0 0.15em;
+  clip-path: inset(-40% calc((1 - var(--sig)) * 100%) -40% 0);
+}
+
+/* ---------- the sky, at the end of the page (day, pink dusk, night) ---------- */
+.outro { position: relative; isolation: isolate; overflow: hidden; }
+.outro__sky { position: absolute; inset: 0; z-index: -1; overflow: hidden; background: linear-gradient(180deg, var(--background) 0%, var(--sky-2) 24%, var(--sky-3) 64%, var(--sky-4) 100%); }
+.scene__stars { position: absolute; left: 0; top: 0; width: 1px; height: 1px; border-radius: 50%; opacity: var(--stars); transition: opacity var(--mood-t) var(--ease-io); }
+.scene__orb {
+  position: absolute; left: 0; top: 0; width: var(--orb-size); height: var(--orb-size); margin: calc(var(--orb-size) / -2) 0 0 calc(var(--orb-size) / -2); border-radius: 50%;
+  transform: translate(calc(var(--orb-x) * 0.22), calc(var(--orb-y) + 34svh)); opacity: 0.85;
+  background: radial-gradient(circle closest-side, var(--orb-color) 0, var(--orb-color) var(--orb-core), var(--orb-glow) calc(var(--orb-core) + var(--orb-edge)), transparent 100%);
+  transition: transform 1.9s var(--ease-io), width 1.9s var(--ease-io), height 1.9s var(--ease-io), margin 1.9s var(--ease-io);
+}
+.cloud { position: absolute; pointer-events: none; }
+.cloud img {
+  display: block; width: 100%; height: auto;
+  -webkit-mask-image: radial-gradient(closest-side, #000 55%, transparent); mask-image: radial-gradient(closest-side, #000 55%, transparent);
+  filter: var(--cloud-filter); opacity: var(--cloud-opacity); transition: filter var(--mood-t) var(--ease-io), opacity var(--mood-t) var(--ease-io);
+  animation: drift var(--dur, 84s) ease-in-out infinite alternate;
+}
+@keyframes drift { from { transform: translate3d(-2.4vw, 0, 0); } to { transform: translate3d(2.4vw, 0, 0); } }
+.cloud--o1 { right: -9vw; top: 18%; width: 44vw; --dur: 100s; }
+.cloud--o2 { left: -8vw; top: 46%; width: 34vw; --dur: 80s; }
+.cloud--o3 { left: 30vw; top: 10%; width: 22vw; --dur: 66s; }
+
+/* the Mustang's face rolls in on the ground, the 9M rises behind it */
+.ostage { position: relative; height: clamp(320px, 64svh, 660px); --c: 0; --w: 0; }
+.ostage__word {
+  position: absolute; left: 50%; bottom: 14%; translate: -50% 0; white-space: nowrap; user-select: none;
+  font-family: var(--font-brand); font-weight: 900; font-size: min(38vw, 68svh); line-height: 0.8; letter-spacing: -0.02em; color: var(--word);
+  opacity: var(--w); transform: translate3d(0, calc((1 - var(--w)) * 26%), 0);
+}
+.ostage__ground { position: absolute; left: 0; right: 0; bottom: 0; height: 36%; background: linear-gradient(180deg, transparent 0, var(--ground) 62%); }
+.ostage__car {
+  position: absolute; z-index: 2; left: 50%; bottom: 2%; width: min(58vw, 104svh); aspect-ratio: 3 / 2; translate: -50% 0; transform-origin: 50% 100%;
+  transform: translate3d(0, calc((1 - var(--c)) * 10%), 0) scale(calc(0.84 + var(--c) * 0.16));
+}
+.ostage__img { display: block; width: 100%; height: 100%; filter: var(--car-filter); transition: filter var(--mood-t) var(--ease-io); }
+.ostage__shadow { position: absolute; left: 3%; right: 3%; bottom: -3%; height: 12%; border-radius: 50%; background: radial-gradient(50% 50% at 50% 50%, rgb(6 14 20 / var(--shadow)), transparent 72%); filter: blur(10px); }
+.ostage__lamp {
+  position: absolute; aspect-ratio: 1.5; translate: -50% -50%; border-radius: 50%; opacity: var(--lamp); pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(50% 50% at 50% 50%, rgb(255 248 228 / 0.95) 0, rgb(255 232 186 / 0.45) 32%, transparent 70%);
+  transition: opacity var(--mood-t) var(--ease-io);
+}
+
+@media (max-width: 899px) {
+  .hero__shot {
+    left: 0; width: auto; top: calc(40svh - max(var(--o), var(--z)) * 40svh);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 calc(20% - max(var(--o), var(--z)) * 20%));
+    mask-image: linear-gradient(180deg, transparent 0, #000 calc(20% - max(var(--o), var(--z)) * 20%));
+  }
+  .hero__frame { left: 36%; top: 60%; translate: -36% -60%; width: max(100%, calc((60svh + max(var(--o), var(--z)) * 40svh) * 1.5)); }
+  .hc__copy { top: clamp(84px, 11.5svh, 108px); }
+  .hc__title span { font-size: 13.4vw; }
+  .hc__title em { font-size: 23vw; }
+  .hc__meta { top: calc(clamp(84px, 11.5svh, 108px) + 41vw); bottom: auto; width: auto; right: var(--gut); }
+  .hc__sign { right: var(--gut); bottom: clamp(104px, 16svh, 150px); font-size: 4.6rem; }
+  .cloud--o1 { right: -30vw; top: 22%; width: 86vw; }
+  .cloud--o2 { left: -26vw; top: 52%; width: 70vw; }
+  .cloud--o3 { left: 40vw; top: 8%; width: 44vw; }
+  .ostage { height: clamp(260px, 50svh, 460px); }
+  .ostage__car { width: 112vw; }
+  .ostage__word { font-size: 64vw; bottom: 18%; }
+}
+
+/* the very small 300 SL */
+.tiny-float { animation: tinyFloat 4.2s ease-in-out infinite alternate; }
+.tiny-shadow { animation: tinyShadow 4.2s ease-in-out infinite alternate; }
+@keyframes tinyFloat { from { transform: translateY(-1px); } to { transform: translateY(-8px); } }
+@keyframes tinyShadow { from { transform: scaleX(1); opacity: 0.9; } to { transform: scaleX(0.8); opacity: 0.45; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+  .marquee { overflow-x: auto; }
+  .cloud img, .tiny-float, .tiny-shadow { animation: none; }
+}
