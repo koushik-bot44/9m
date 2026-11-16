@@ -81,7 +81,7 @@ export function BayWall() {
 
           <motion.figure
             style={{ y: cardY, scale: cardScale }}
-            className="relative aspect-[2/3] h-[min(72svh,740px)] overflow-hidden rounded-[10px] bg-[#111] shadow-[0_6px_20px_rgb(0_0_0/0.16)] max-md:h-auto max-md:w-[74vw] max-md:justify-self-center"
+            className="relative aspect-[2/3] h-[min(72svh,740px,60vw)] overflow-hidden rounded-[10px] bg-[#111] shadow-[0_6px_20px_rgb(0_0_0/0.16)] max-md:h-auto max-md:w-[74vw] max-md:justify-self-center"
           >
             {BAY.map((c, i) => {
               const isCur = i === cur;
