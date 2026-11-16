@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useMotionValue, useMotionValueEvent, useScroll } from "framer-motion";
 import { MessageCircle, Phone } from "lucide-react";
 import { SITE, wa } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -63,24 +63,44 @@ export function Fab() {
   );
 }
 
-/** The very small floating 1954 300 SL, driving its line as you scroll past. */
+/** The very small floating 1954 300 SL. The page holds still while it drives its line from the right edge to the
+ *  left; once it has arrived, the page scrolls on. */
 export function Tiny() {
   const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const x = useTransform(scrollYProgress, [0.05, 0.95], ["82vw", "0vw"]);
+  const road = useRef<HTMLDivElement>(null);
+  const car = useRef<HTMLDivElement>(null);
+  const span = useRef(0); // how far the car travels: the road's width less the car's
+  const x = useMotionValue(0);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
+  // right edge at the start of the hold, left edge at the end of it
+  const place = (p: number) => x.set((1 - Math.min(1, Math.max(0, (p - 0.04) / 0.88))) * span.current);
+  useMotionValueEvent(scrollYProgress, "change", place);
+  useEffect(() => {
+    const measure = () => {
+      span.current = Math.max(0, (road.current?.clientWidth ?? 0) - (car.current?.offsetWidth ?? 0));
+      place(scrollYProgress.get());
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (road.current) ro.observe(road.current);
+    return () => ro.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
-    <div ref={ref} className="gut py-[clamp(40px,6vw,90px)]">
-      <p className="display text-[clamp(1.25rem,1.9vw,1.7rem)] font-bold">
+    <div ref={ref} className="relative h-[230svh]">
+      <div className="gut sticky top-0 flex h-svh flex-col justify-center">
+      <p className="display text-[clamp(1.6rem,2.6vw,2.4rem)] font-bold">
         Care, down to the smallest <em>detail.</em>
       </p>
-      <div className="relative mt-6 h-[clamp(70px,7.4vw,104px)] overflow-x-clip border-b border-border">
-        <motion.div style={{ x }} className="absolute bottom-[-3px] left-0 w-[clamp(96px,10vw,148px)]">
+      <div ref={road} className="relative mt-6 h-[clamp(70px,7.4vw,104px)] overflow-x-clip border-b border-border">
+        <motion.div ref={car} style={{ x }} className="absolute bottom-[-3px] left-0 w-[clamp(110px,11vw,160px)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/media/300sl.png" alt="A tiny silver 1954 Mercedes-Benz 300 SL" width={640} height={221} loading="lazy" className="tiny-float relative z-[1] h-auto w-full" />
           <span className="tiny-shadow absolute right-[5%] bottom-[-2px] left-[8%] h-[7px] rounded-full bg-foreground/30 blur-[4px]" />
         </motion.div>
       </div>
       <p className="mt-3 text-right text-sm text-muted-foreground max-md:text-left">1954 Mercedes-Benz 300 SL, shown at roughly 1:120</p>
+      </div>
     </div>
   );
 }

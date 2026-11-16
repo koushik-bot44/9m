@@ -9,10 +9,11 @@ import { cn } from "@/lib/utils";
 const MS = 3800;
 
 // Three frames on the coloured panel, placed like the reference: tall left, small centre, right.
+// On phones: two side by side on top, one centred below. No photo ever sits on another.
 const FRAMES = [
-  "left-[4%] top-[8%] w-[30%] aspect-[3/4] max-md:left-[5%] max-md:top-[5%] max-md:w-[56%]",
-  "left-[37.5%] top-[24%] w-[25%] aspect-square max-md:left-[34%] max-md:top-auto max-md:bottom-[5%] max-md:w-[46%]",
-  "right-[4%] top-[6%] w-[30%] aspect-[4/5] max-md:right-[5%] max-md:top-[13%] max-md:w-[42%]",
+  "left-[4%] top-[8%] w-[30%] aspect-[3/4] max-md:left-[5%] max-md:top-[4%] max-md:w-[43%] max-md:aspect-[4/5]",
+  "left-[37.5%] top-[24%] w-[25%] aspect-square max-md:left-[25%] max-md:top-auto max-md:bottom-[4%] max-md:w-[50%] max-md:aspect-[5/4]",
+  "right-[4%] top-[6%] w-[30%] aspect-[4/5] max-md:right-[5%] max-md:top-[4%] max-md:w-[43%]",
 ];
 
 /** Services, searched the Cosmos way: a query types itself into the search bar, and the panel colour and all
@@ -71,7 +72,7 @@ export function Services() {
       </div>
 
       {/* the curved row from 21st.dev: photos stream round the inside of a cylinder */}
-      <TiltedGridHero images={BAND} tileHeight={48} curve={78} speed={5} axis={50} className="mt-[clamp(20px,3vw,44px)] h-[300px] w-full md:h-[54svh]" />
+      <TiltedGridHero images={BAND} tileHeight={56} curve={32} gap={9} fade={7} speed={5} axis={50} className="mt-[clamp(20px,3vw,44px)] h-[260px] w-full md:h-[50svh]" />
 
       <div className="gut mt-[clamp(36px,5vw,72px)]">
         <div className="mx-auto max-w-[1480px]">
@@ -79,7 +80,7 @@ export function Services() {
             ref={mat}
             onPointerEnter={() => setHover(true)}
             onPointerLeave={() => setHover(false)}
-            className="relative aspect-[16/8.2] overflow-hidden rounded-[14px] transition-colors duration-700 max-md:aspect-[4/4.9]"
+            className="relative aspect-[16/8.2] overflow-hidden rounded-[14px] transition-colors duration-700 max-md:aspect-[4/4.4]"
             style={{ background: s.mat }}
           >
             {FRAMES.map((f, k) => (
@@ -98,7 +99,7 @@ export function Services() {
             ))}
             <div
               aria-hidden
-              className="absolute top-[54%] left-[26%] z-[1] flex h-[clamp(2.4rem,3.7vw,3.5rem)] min-w-[22%] -translate-y-1/2 items-center gap-2.5 rounded-full bg-white/90 px-[clamp(0.8rem,1.2vw,1.2rem)] text-[clamp(0.85rem,1.2vw,1.1rem)] font-medium whitespace-nowrap text-[#0e0e0f] shadow-[0_2px_8px_rgb(0_0_0/0.12)] max-md:top-[57%] max-md:left-1/2 max-md:min-w-0 max-md:-translate-x-1/2"
+              className="absolute top-[54%] left-[26%] z-[1] flex h-[clamp(2.4rem,3.7vw,3.5rem)] min-w-[22%] -translate-y-1/2 items-center gap-2.5 rounded-full bg-white/90 px-[clamp(0.8rem,1.2vw,1.2rem)] text-[clamp(0.85rem,1.2vw,1.1rem)] font-medium whitespace-nowrap text-[#0e0e0f] shadow-[0_2px_8px_rgb(0_0_0/0.12)] max-md:top-[54%] max-md:left-1/2 max-md:min-w-0 max-md:-translate-x-1/2"
             >
               <Search className="size-[1.1em] opacity-60" strokeWidth={2} />
               <span>{typed}</span>
