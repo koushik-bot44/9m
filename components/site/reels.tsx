@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useMotionValueEvent, useScroll } from "framer-motion";
 import { Pause, Play } from "lucide-react";
+import { opt } from "@/lib/img";
+import { useNear } from "@/lib/near";
 import { DEFAULT_REELS, SITE, type Reel } from "@/lib/site";
 import { Pill } from "./pill";
 
@@ -16,6 +18,7 @@ export function Reels() {
   const travel = useRef(0); // how far the row has to move: its width less the screen's
   const [hold, setHold] = useState(0);
   const x = useMotionValue(0);
+  const near = useNear(wrap); // reels and their posters download only when a visitor is getting close
 
   useEffect(() => {
     let live = true;
@@ -70,7 +73,7 @@ export function Reels() {
         </div>
         <motion.div ref={track} style={{ x }} className="mt-[clamp(20px,3.4svh,44px)] flex w-max gap-[clamp(10px,1.2vw,18px)] px-[var(--gut)]">
           {list.map((r) => (
-            <ReelCard key={r.id} reel={r} />
+            <ReelCard key={r.id} reel={r} near={near} />
           ))}
         </motion.div>
       </div>
@@ -78,7 +81,7 @@ export function Reels() {
   );
 }
 
-function ReelCard({ reel }: { reel: Reel }) {
+function ReelCard({ reel, near }: { reel: Reel; near: boolean }) {
   const video = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const stopped = useRef(false); // the visitor paused this one
@@ -118,8 +121,8 @@ function ReelCard({ reel }: { reel: Reel }) {
     <figure className="group relative aspect-[9/16] h-[min(58svh,520px)] shrink-0 overflow-hidden rounded-[14px] bg-[#111] max-md:h-[min(56svh,440px)]">
       <video
         ref={video}
-        src={reel.src}
-        poster={reel.poster}
+        src={near ? reel.src : undefined}
+        poster={near && reel.poster ? opt(reel.poster, 640, 60) : undefined}
         muted
         loop
         playsInline

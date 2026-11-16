@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Star } from "lucide-react";
 import { REVIEWS, SITE, type Review } from "@/lib/site";
+import { opt } from "@/lib/img";
 import { cn } from "@/lib/utils";
 import { Pill } from "./pill";
 
@@ -66,7 +67,7 @@ export function Reviews() {
                     <div className="relative bg-[#fbfaf7] p-[clamp(9px,0.85vw,13px)] pb-[clamp(44px,4vw,58px)] shadow-[0_2px_8px_rgb(0_0_0/0.18)] transition-transform duration-500 ease-[var(--ease-out)] hover:-translate-y-2">
                       <div className="aspect-[4/5] overflow-hidden bg-[#e6e3dd]">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={r.photo.src} alt={dup ? "" : r.photo.alt} draggable={false} className="size-full object-cover" />
+                        <img src={opt(r.photo.src, 640, 75)} alt={dup ? "" : r.photo.alt} width={480} height={600} loading="lazy" decoding="async" draggable={false} className="size-full object-cover" />
                       </div>
                       <span
                         aria-hidden

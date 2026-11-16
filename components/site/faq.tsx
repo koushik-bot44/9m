@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { fillImg } from "@/lib/img";
 import { FAQS, PHOTOS } from "@/lib/site";
 import { WaPill } from "./pill";
 
@@ -29,7 +30,7 @@ export function Faq() {
         </div>
         <div className="relative overflow-hidden rounded-[14px] max-md:aspect-[4/3] md:sticky md:top-24 md:h-[min(78svh,760px)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={PHOTOS.mustangInterior.src} alt={PHOTOS.mustangInterior.alt} loading="lazy" className="absolute inset-0 size-full object-cover" />
+          <img {...fillImg(PHOTOS.mustangInterior.src, PHOTOS.mustangInterior.alt, "(max-width: 767px) 92vw, 46vw")} className="absolute inset-0 size-full object-cover" />
         </div>
       </div>
     </section>

@@ -7,6 +7,7 @@ export const fraunces = Fraunces({
   axes: ["SOFT", "WONK", "opsz"],
   variable: "--font-fraunces",
   display: "swap",
+  preload: false, // headings below the first screen: not worth competing with the hero photo
 });
 
 // Everything you read.
@@ -16,4 +17,4 @@ export const instrument = Instrument_Sans({ subsets: ["latin"], variable: "--fon
 export const brand = Montserrat({ subsets: ["latin"], weight: ["600", "900"], variable: "--font-montserrat", display: "swap" });
 
 // Autographs on the review photos.
-export const sign = Mrs_Saint_Delafield({ subsets: ["latin"], weight: "400", variable: "--font-sign", display: "swap" });
+export const sign = Mrs_Saint_Delafield({ subsets: ["latin"], weight: "400", variable: "--font-sign", display: "swap", preload: false });

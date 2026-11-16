@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import { FILMS as REELS } from "@/lib/site";
+import { opt } from "@/lib/img";
+import { useNear } from "@/lib/near";
 import { cn } from "@/lib/utils";
 
 /** A full-screen car film with a huge wordmark over it and a strip of reels to switch between. */
@@ -11,6 +13,7 @@ export function Film() {
   const video = useRef<HTMLVideoElement>(null);
   const [reel, setReel] = useState(0);
   const inView = useInView(wrap, { amount: 0.2 });
+  const near = useNear(wrap); // the film and its poster download only when a visitor is getting close
 
   // the frame arrives as a rounded card and grows to fill the screen as you scroll into it
   const { scrollYProgress } = useScroll({ target: wrap, offset: ["start end", "end end"] });
@@ -33,8 +36,8 @@ export function Film() {
           <video
             ref={video}
             key={REELS[reel].src}
-            src={REELS[reel].src}
-            poster={REELS[reel].poster}
+            src={near ? REELS[reel].src : undefined}
+            poster={near ? opt(REELS[reel].poster, 1200, 60) : undefined}
             muted
             loop
             playsInline
@@ -61,7 +64,7 @@ export function Film() {
                 className={cn("relative aspect-[16/10] w-[clamp(120px,13vw,200px)] shrink-0 overflow-hidden rounded-[8px] opacity-70 transition-opacity hover:opacity-100", reel === i && "opacity-100 ring-2 ring-[#f7f3ec]")}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={r.poster} alt="" loading="lazy" className="h-full w-full object-cover" />
+                <img src={opt(r.poster, 384, 60)} alt="" width={200} height={125} loading="lazy" decoding="async" className="h-full w-full object-cover" />
                 <span className="absolute bottom-1.5 left-2 text-xs font-semibold text-white [text-shadow:0_1px_4px_rgb(0_0_0/0.6)]">{r.label}</span>
               </button>
             ))}

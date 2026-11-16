@@ -77,6 +77,9 @@ export function Footer() {
         <div className="mx-[clamp(22px,4vw,64px)] mt-12 flex flex-wrap justify-between gap-3 border-t border-white/10 py-5 text-sm text-white/50">
           <p>© 2026 9M Car Care. All rights reserved.</p>
           <p>Photographs: 9M Car Care and Pexels.</p>
+          <a href="/privacy" className="underline-offset-4 hover:text-white hover:underline">
+            Privacy
+          </a>
         </div>
 
         <div

@@ -5,9 +5,13 @@ import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-mot
 import { Search } from "lucide-react";
 import { TiltedGridHero } from "@/components/ui/tilted-grid-hero";
 import { BAND, SERVICES, wa } from "@/lib/site";
+import { fillImg, opt } from "@/lib/img";
+import { useNear } from "@/lib/near";
 import { cn } from "@/lib/utils";
 
 const N = SERVICES.length;
+// the curved band's photos, resized for its tiles (about 410px wide, so 828 covers Retina)
+const BAND_OPT = BAND.map((b) => ({ src: opt(b.src, 828), alt: b.alt }));
 
 // Three frames on the coloured panel, placed like the reference: tall left, small centre, right.
 // On phones: two side by side on top, one centred below. No photo ever sits on another.
@@ -21,6 +25,8 @@ const FRAMES = [
  *  each step types a new search, and the panel colour and all three photos cut to match it in place. */
 export function Services() {
   const hold = useRef<HTMLDivElement>(null);
+  const band = useRef<HTMLDivElement>(null);
+  const bandNear = useNear(band); // the band is hundreds of 3D strips: build it only when a visitor gets close
   const [cur, setCur] = useState(0);
   const [typed, setTyped] = useState(SERVICES[0].query);
 
@@ -72,7 +78,9 @@ export function Services() {
       </div>
 
       {/* the curved row from 21st.dev: photos stream round the inside of a cylinder, joined edge to edge */}
-      <TiltedGridHero images={BAND} tileHeight={48} curve={78} gap={0} speed={5} axis={50} className="mt-[clamp(20px,3vw,44px)] h-[300px] w-full md:h-[54svh]" />
+      <div ref={band} className="mt-[clamp(20px,3vw,44px)] h-[300px] w-full md:h-[54svh]">
+        {bandNear ? <TiltedGridHero images={BAND_OPT} tileHeight={48} curve={78} gap={0} speed={5} axis={50} className="h-full w-full" /> : null}
+      </div>
 
       {/* the hold: one step per service */}
       <div ref={hold} className="relative" style={{ height: `${100 + N * 55}svh` }}>
@@ -89,8 +97,7 @@ export function Services() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       key={x.key}
-                      src={x.photos[k].src}
-                      alt={j === cur ? x.photos[k].alt : ""}
+                      {...fillImg(x.photos[k].src, j === cur ? x.photos[k].alt : "", "(max-width: 767px) 50vw, 30vw")}
                       className={cn("absolute inset-0 size-full object-cover", j === cur ? "visible" : "invisible")}
                     />
                   ))}
@@ -116,7 +123,7 @@ export function Services() {
                   aria-selected={k === cur}
                   aria-controls="svc-panel"
                   onClick={() => goTo(k)}
-                  className={cn("relative border-t border-border pt-3 text-left transition-opacity", k === cur ? "opacity-100" : "opacity-55 hover:opacity-100")}
+                  className={cn("group relative border-t border-border pt-3 text-left")}
                 >
                   {/* past steps full, the current one fills as you scroll, later ones empty */}
                   <motion.i
@@ -124,7 +131,7 @@ export function Services() {
                     className="absolute -top-px left-0 h-[2px] w-full origin-left bg-foreground"
                     style={k === cur ? { scaleX: fill } : { scaleX: k < cur ? 1 : 0 }}
                   />
-                  <span className="display block text-[clamp(1.15rem,1.7vw,1.7rem)]">{x.name}</span>
+                  <span className={cn("display block text-[clamp(1.15rem,1.7vw,1.7rem)] transition-colors", k === cur ? "text-foreground" : "text-foreground/60 group-hover:text-foreground")}>{x.name}</span>
                   <span className="mt-0.5 block text-sm text-muted-foreground">{x.sub}</span>
                 </button>
               ))}

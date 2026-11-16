@@ -8,9 +8,9 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-fraunces), Georgia, serif;
-  --font-heading: var(--font-fraunces), Georgia, serif;
-  --font-hand: var(--font-sign), cursive;
+  --font-display: var(--font-fraunces, Georgia), Georgia, serif;
+  --font-heading: var(--font-fraunces, Georgia), Georgia, serif;
+  --font-hand: var(--font-sign, cursive), cursive;
   --font-brand: var(--font-montserrat), ui-sans-serif, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --color-paper: var(--paper);
@@ -170,6 +170,8 @@
 
 /* the site's background photograph (toy cars): fixed behind everything, very light */
 .site-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; background-position: center; background-size: cover; background-repeat: no-repeat; opacity: 0.065; }
+/* the toy cars arrive once the first screen is done (see the late loader in the layout) */
+.late .site-bg { background-image: var(--site-bg); }
 :root[data-mood="dusk"] .site-bg { opacity: 0.06; }
 :root[data-mood="night"] .site-bg { opacity: 0.05; }
 
@@ -193,6 +195,26 @@
 .pf__support { position: absolute; inset: calc(var(--gp-word-bottom, 50%) + 26px) 24px auto; margin: 0; text-align: center; font-family: var(--font-display); font-variation-settings: "SOFT" 80, "WONK" 1; font-style: italic; font-weight: 800; font-size: clamp(20px, 1.9vw, 28px); }
 .pf__scroll { position: absolute; inset: auto var(--gut) 4% auto; text-align: right; font-size: 12px; color: var(--muted-foreground); }
 @media (max-width: 899px) { .pf__scroll { inset: auto 24px 5%; text-align: center; } }
+
+/* ---------- the intro's first frame, rendered by the server ----------
+   Until the portal's script and font are ready, this draws the identical first frame with no JavaScript: the hero
+   photo seen through "9M" (Montserrat Black outlines, extracted from the site's own font file), so the largest paint
+   happens as soon as the photo arrives. Sizes and positions follow the portal's own maths: the word's ink is 1.546em
+   wide and 0.732em tall, 52% of the screen high (or 84% wide, whichever is smaller), centred at 46% from the top. */
+.pf-poster {
+  --pf-f: min(71.04svh, 54.33vw);
+  --gp-word-top: calc(46svh - var(--pf-f) * 0.366);
+  --gp-word-bottom: calc(46svh + var(--pf-f) * 0.366);
+}
+.pf-poster__mask {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1.2 -71.6 154.6 73.2'%3E%3Cpath d='M24.40 1.60Q18.20 1.60 12.45 0.15Q6.70 -1.30 2.70 -3.90L11.20 -20.40Q14.30 -18.20 17.45 -17.45Q20.60 -16.70 23.90 -16.70Q31 -16.70 35.25 -20.95Q39.50 -25.20 39.50 -33.30Q39.50 -34.80 39.50 -36.25Q39.50 -37.70 39.50 -39.20L44.90 -35.30Q43 -31.90 40.25 -29.55Q37.50 -27.20 33.80 -25.95Q30.10 -24.70 25.20 -24.70Q18.80 -24.70 13.35 -27.45Q7.90 -30.20 4.55 -35.25Q1.20 -40.30 1.20 -47.10Q1.20 -54.60 5 -60.10Q8.80 -65.60 15.25 -68.60Q21.70 -71.60 29.60 -71.60Q39.60 -71.60 47.15 -67.75Q54.70 -63.90 58.95 -56.30Q63.20 -48.70 63.20 -37.20Q63.20 -24.90 58.30 -16.25Q53.40 -7.60 44.70 -3Q36 1.60 24.40 1.60ZM31.20 -41Q33.30 -41 34.95 -41.90Q36.60 -42.80 37.50 -44.40Q38.40 -46 38.40 -48.20Q38.40 -50.40 37.50 -52Q36.60 -53.60 34.95 -54.45Q33.30 -55.30 31.20 -55.30Q29.10 -55.30 27.50 -54.45Q25.90 -53.60 24.95 -52Q24 -50.40 24 -48.20Q24 -44.90 26.05 -42.95Q28.10 -41 31.20 -41ZM71.80 0L71.80 -70L91.20 -70L119.20 -24.30L109 -24.30L136.20 -70L155.60 -70L155.80 0L134.30 0L134.10 -37.60L137.50 -37.60L118.90 -6.30L108.50 -6.30L89.10 -37.60L93.30 -37.60L93.30 0Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='1.2 -71.6 154.6 73.2'%3E%3Cpath d='M24.40 1.60Q18.20 1.60 12.45 0.15Q6.70 -1.30 2.70 -3.90L11.20 -20.40Q14.30 -18.20 17.45 -17.45Q20.60 -16.70 23.90 -16.70Q31 -16.70 35.25 -20.95Q39.50 -25.20 39.50 -33.30Q39.50 -34.80 39.50 -36.25Q39.50 -37.70 39.50 -39.20L44.90 -35.30Q43 -31.90 40.25 -29.55Q37.50 -27.20 33.80 -25.95Q30.10 -24.70 25.20 -24.70Q18.80 -24.70 13.35 -27.45Q7.90 -30.20 4.55 -35.25Q1.20 -40.30 1.20 -47.10Q1.20 -54.60 5 -60.10Q8.80 -65.60 15.25 -68.60Q21.70 -71.60 29.60 -71.60Q39.60 -71.60 47.15 -67.75Q54.70 -63.90 58.95 -56.30Q63.20 -48.70 63.20 -37.20Q63.20 -24.90 58.30 -16.25Q53.40 -7.60 44.70 -3Q36 1.60 24.40 1.60ZM31.20 -41Q33.30 -41 34.95 -41.90Q36.60 -42.80 37.50 -44.40Q38.40 -46 38.40 -48.20Q38.40 -50.40 37.50 -52Q36.60 -53.60 34.95 -54.45Q33.30 -55.30 31.20 -55.30Q29.10 -55.30 27.50 -54.45Q25.90 -53.60 24.95 -52Q24 -50.40 24 -48.20Q24 -44.90 26.05 -42.95Q28.10 -41 31.20 -41ZM71.80 0L71.80 -70L91.20 -70L119.20 -24.30L109 -24.30L136.20 -70L155.60 -70L155.80 0L134.30 0L134.10 -37.60L137.50 -37.60L118.90 -6.30L108.50 -6.30L89.10 -37.60L93.30 -37.60L93.30 0Z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+  -webkit-mask-size: calc(var(--pf-f) * 1.546) calc(var(--pf-f) * 0.732); mask-size: calc(var(--pf-f) * 1.546) calc(var(--pf-f) * 0.732);
+  -webkit-mask-position: 50% calc(46svh - var(--pf-f) * 0.366); mask-position: 50% calc(46svh - var(--pf-f) * 0.366);
+}
+.pf-poster [data-gp-caption] { position: absolute; display: flex; align-items: center; gap: 1rem; }
+.pf-poster [data-gp-enter] { display: inline-flex; align-items: center; text-decoration: none; }
 
 /* the progress line on the service tabs */
 @keyframes tabfill { from { transform: scaleX(0); } to { transform: scaleX(1); } }

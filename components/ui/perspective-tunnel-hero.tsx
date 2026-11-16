@@ -107,7 +107,7 @@ function TunnelCard({ card, progress, pointer, total, stage }: TunnelCardProps) 
     >
       <div className="relative h-full w-full overflow-hidden rounded-[14px] bg-muted shadow-[0_6px_8px_rgb(14_14_15/0.2)] ring-1 ring-black/10">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={card.item.src} alt={card.item.alt ?? card.item.title} draggable={false} className="h-full w-full object-cover" />
+        <img src={card.item.src} alt={card.item.alt ?? card.item.title} loading="lazy" decoding="async" draggable={false} className="h-full w-full object-cover" />
         <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/75 via-black/5 to-transparent p-3 sm:p-4">
           <span className="text-xs font-semibold text-white sm:text-sm">{card.item.title}</span>
         </div>

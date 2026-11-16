@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { opt } from "@/lib/img";
+import { useNear } from "@/lib/near";
 import { BAY } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +14,7 @@ const REVEAL_MS = 620;
 export function BayWall() {
   const wrap = useRef<HTMLElement>(null);
   const live = useInView(wrap, { amount: 0.35 });
+  const near = useNear(wrap); // nothing downloads until a visitor is getting close
   const videos = useRef<(HTMLVideoElement | null)[]>([]);
   const [cur, setCur] = useState(0);
   const [prev, setPrev] = useState<number | null>(null);
@@ -90,11 +93,11 @@ export function BayWall() {
                     ref={(el) => {
                       videos.current[i] = el;
                     }}
-                    src={c.src}
-                    poster={c.poster}
+                    src={near ? c.src : undefined}
+                    poster={near ? opt(c.poster, 828, 60) : undefined}
                     muted
                     playsInline
-                    preload={isCur || i === (cur + 1) % n ? "auto" : "none"}
+                    preload={!near ? "none" : isCur ? "auto" : i === (cur + 1) % n ? "metadata" : "none"}
                     onEnded={() => {
                       if (i === curRef.current) next();
                     }}

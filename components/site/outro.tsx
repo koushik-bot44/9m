@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { opt } from "@/lib/img";
 import { Footer } from "./footer";
 import { Visit } from "./visit";
 
@@ -29,9 +30,9 @@ export function Outro() {
       <div className="outro__sky" aria-hidden>
         <i ref={stars} className="scene__stars" />
         <i className="scene__orb" />
-        <div className="cloud cloud--o1"><img src="/media/sky/cloud-4.png" alt="" loading="lazy" /></div>
-        <div className="cloud cloud--o2"><img src="/media/sky/cloud-2.png" alt="" loading="lazy" /></div>
-        <div className="cloud cloud--o3"><img src="/media/sky/cloud-3.png" alt="" loading="lazy" /></div>
+        <div className="cloud cloud--o1"><img src={opt("/media/sky/cloud-4.png", 828)} width={720} height={512} alt="" loading="lazy" decoding="async" /></div>
+        <div className="cloud cloud--o2"><img src={opt("/media/sky/cloud-2.png", 828)} width={720} height={568} alt="" loading="lazy" decoding="async" /></div>
+        <div className="cloud cloud--o3"><img src={opt("/media/sky/cloud-3.png", 828)} width={881} height={172} alt="" loading="lazy" decoding="async" /></div>
       </div>
       <Visit />
       <Footer />

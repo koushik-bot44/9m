@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useMotionValueEvent, useScroll } from "framer-motion";
 import { MessageCircle, Phone } from "lucide-react";
 import { SITE, wa } from "@/lib/site";
+import { opt } from "@/lib/img";
 import { cn } from "@/lib/utils";
 
 /** Film grain over the whole page, generated once in the browser. */
@@ -95,7 +96,7 @@ export function Tiny() {
       <div ref={road} className="relative mt-6 h-[clamp(70px,7.4vw,104px)] overflow-x-clip border-b border-border">
         <motion.div ref={car} style={{ x }} className="absolute bottom-[-3px] left-0 w-[clamp(110px,11vw,160px)]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/media/300sl.png" alt="A tiny silver 1954 Mercedes-Benz 300 SL" width={640} height={221} loading="lazy" className="tiny-float relative z-[1] h-auto w-full" />
+          <img src={opt("/media/300sl.png", 384)} alt="A tiny silver 1954 Mercedes-Benz 300 SL" width={640} height={221} loading="lazy" decoding="async" className="tiny-float relative z-[1] h-auto w-full" />
           <span className="tiny-shadow absolute right-[5%] bottom-[-2px] left-[8%] h-[7px] rounded-full bg-foreground/30 blur-[4px]" />
         </motion.div>
       </div>
